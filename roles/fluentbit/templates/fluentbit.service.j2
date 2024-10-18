@@ -1,0 +1,13 @@
+[Unit]
+Description=Fluent Bit
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/td-agent-bit/bin/td-agent-bit -c /etc/fluentbit/fluent-bit.conf
+Restart=always
+User=fluentbit
+Group=fluentbit
+
+[Install]
+WantedBy=multi-user.target

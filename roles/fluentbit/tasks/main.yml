@@ -1,98 +1,81 @@
 ---
-- name: Install dependencies
-  ansible.builtin.apt:
-    name: apt-transport-https
-    state: present
-  become: yes
-
-- name: Add FluentBit repository key
+- name: "Add FluentBit repository GPG key"
   ansible.builtin.apt_key:
-    url: https://packages.fluentbit.io/fluentbit.key
-    state: present
+    url: "https://packages.fluentbit.io/fluentbit.key"
+    state: "present"
 
-- name: Add FluentBit repository
+- name: "Add FluentBit official repository"
   ansible.builtin.apt_repository:
-    repo: "deb https://packages.fluentbit.io/ubuntu/focal focal main"
-    state: present
-  become: yes
+    repo: "{{ fluentbit_apt_repo }}"
+    state: "present"
 
-- name: Install FluentBit
+- name: "Install FluentBit"
   ansible.builtin.apt:
-    name: td-agent-bit
-    state: present
-  become: yes
+    name: "td-agent-bit"
+    state: "present"
+    update_cache: "yes"
 
-- name: Create FluentBit user and group
+- name: "Create FluentBit group"
   ansible.builtin.group:
     name: "{{ fluentbit_group }}"
-    state: present
+    state: "present"
 
-- name: Create FluentBit user
+- name: "Create FluentBit user"
   ansible.builtin.user:
     name: "{{ fluentbit_user }}"
     group: "{{ fluentbit_group }}"
-    shell: /usr/sbin/nologin
-    state: present
+    shell: "/usr/sbin/nologin"
+    state: "present"
 
-- name: Create directories for FluentBit
+- name: "Create directories for FluentBit"
   ansible.builtin.file:
     path: "{{ item }}"
-    state: directory
+    state: "directory"
     owner: "{{ fluentbit_user }}"
     group: "{{ fluentbit_group }}"
-    mode: '0755'
+    mode: "0755"
   loop:
     - "{{ fluentbit_conf_dir }}"
     - "{{ fluentbit_log_dir }}"
 
-- name: Copy FluentBit configuration
+- name: "Copy FluentBit configuration"
   ansible.builtin.template:
-    src: fluent-bit.conf.j2
+    src: "fluent-bit.conf.j2"
     dest: "{{ fluentbit_conf_dir }}/fluent-bit.conf"
     owner: "{{ fluentbit_user }}"
     group: "{{ fluentbit_group }}"
-    mode: '0644'
+    mode: "0644"
 
-- name: Copy FluentBit parsers configuration
+- name: "Copy FluentBit parsers configuration"
   ansible.builtin.template:
-    src: parsers.conf.j2
+    src: "parsers.conf.j2"
     dest: "{{ fluentbit_conf_dir }}/parsers.conf"
     owner: "{{ fluentbit_user }}"
     group: "{{ fluentbit_group }}"
-    mode: '0644'
+    mode: "0644"
 
-- name: Copy ElasticSearch output configuration
+- name: "Copy ElasticSearch output configuration"
   ansible.builtin.template:
-    src: output-elasticsearch.conf.j2
+    src: "output-elasticsearch.conf.j2"
     dest: "{{ fluentbit_conf_dir }}/output-elasticsearch.conf"
     owner: "{{ fluentbit_user }}"
     group: "{{ fluentbit_group }}"
-    mode: '0644'
+    mode: "0644"
 
-- name: Deploy FluentBit systemd service file
-  ansible.builtin.copy:
-    src: fluentbit.service
-    dest: /etc/systemd/system/fluentbit.service
-    owner: root
-    group: root
-    mode: '0644'
-  become: yes
+- name: "Deploy FluentBit systemd service file"
+  ansible.builtin.template:
+    src: "fluentbit.service.j2"
+    dest: "/etc/systemd/system/fluentbit.service"
+    owner: "root"
+    group: "root"
+    mode: "0644"
 
-- name: Reload systemd daemon
+- name: "Reload systemd daemon"
   ansible.builtin.systemd:
-    daemon_reload: yes
-  become: yes
+    daemon_reload: "yes"
 
-- name: Enable and start FluentBit service
+- name: "Enable and start FluentBit service"
   ansible.builtin.systemd:
     name: "{{ fluentbit_service_name }}"
-    enabled: true
-    state: started
-  become: yes
-
-- name: Restart FluentBit service if configuration changes
-  ansible.builtin.systemd:
-    name: "{{ fluentbit_service_name }}"
-    state: restarted
-    when: ansible_fluentbit_config_changed
-  become: yes
+    enabled: "yes"
+    state: "started"

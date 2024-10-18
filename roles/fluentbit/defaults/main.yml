@@ -1,4 +1,4 @@
-fluentbit_version: "1.9.5"
+fluentbit_version: "2.1.0"
 fluentbit_user: "fluentbit"
 fluentbit_group: "fluentbit"
 fluentbit_install_dir: "/opt/fluentbit"
@@ -7,3 +7,5 @@ fluentbit_conf_dir: "/etc/fluentbit"
 fluentbit_service_name: "fluentbit"
 elasticsearch_host: "localhost"
 elasticsearch_port: 9200
+
+fluentbit_apt_repo: "deb https://packages.fluentbit.io/ubuntu/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"

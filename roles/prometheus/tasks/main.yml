@@ -42,7 +42,7 @@
     owner: "{{ prometheus_user }}"
     group: "{{ prometheus_group }}"
     mode: '0644'
-  notify: Reload Prometheus
+  notify: Restart Prometheus
 
 - name: Copy Prometheus service file
   ansible.builtin.template:

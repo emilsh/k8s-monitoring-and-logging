@@ -1,0 +1,9 @@
+fluentbit_version: "1.9.5"
+fluentbit_user: "fluentbit"
+fluentbit_group: "fluentbit"
+fluentbit_install_dir: "/opt/fluentbit"
+fluentbit_log_dir: "/var/log/fluentbit"
+fluentbit_conf_dir: "/etc/fluentbit"
+fluentbit_service_name: "fluentbit"
+elasticsearch_host: "localhost"
+elasticsearch_port: 9200

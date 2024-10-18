@@ -1,0 +1,84 @@
+---
+# Installing ElasticSearch
+- name: Install apt-transport-https for APT
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+
+- name: Add ElasticSearch APT key
+  ansible.builtin.apt_key:
+    url: "https://artifacts.elastic.co/GPG-KEY-elasticsearch"
+    state: present
+
+- name: Add ElasticSearch repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    state: present
+    update_cache: yes
+
+- name: Install ElasticSearch
+  ansible.builtin.apt:
+    name: elasticsearch
+    state: present
+    update_cache: yes
+
+- name: Ensure elasticsearch user and group exist
+  ansible.builtin.user:
+    name: "{{ elasticsearch_user }}"
+    state: present
+    shell: /bin/false
+
+- name: Create ElasticSearch data directory
+  ansible.builtin.file:
+    path: "{{ elasticsearch_data_dir }}"
+    state: directory
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: '0755'
+
+- name: Change owner of /var/run/elasticsearch
+  ansible.builtin.file:
+    path: "/var/run/elasticsearch"
+    state: directory
+    owner: "{{ elasticsearch_user }}"
+    group: "{{ elasticsearch_group }}"
+    mode: '0755'
+
+- name: Copy ElasticSearch systemd service file
+  ansible.builtin.template:
+    src: "elasticsearch.service.j2"
+    dest: "/etc/systemd/system/elasticsearch.service"
+    mode: '0644'
+  notify: Reload systemd
+
+- name: Start and enable ElasticSearch service
+  ansible.builtin.systemd:
+    name: elasticsearch
+    enabled: yes
+    state: started
+
+# Installing Kibana
+- name: Install Kibana
+  ansible.builtin.apt:
+    name: kibana
+    state: present
+    update_cache: yes
+
+- name: Ensure kibana user and group exist
+  ansible.builtin.user:
+    name: "{{ kibana_user }}"
+    state: present
+    shell: /bin/false
+
+- name: Copy Kibana systemd service file
+  ansible.builtin.template:
+    src: "kibana.service.j2"
+    dest: "/etc/systemd/system/kibana.service"
+    mode: '0644'
+  notify: Reload systemd
+
+- name: Start and enable Kibana service
+  ansible.builtin.systemd:
+    name: kibana
+    enabled: yes
+    state: started

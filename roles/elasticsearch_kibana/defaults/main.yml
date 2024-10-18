@@ -1,0 +1,7 @@
+---
+elasticsearch_user: "elasticsearch"
+elasticsearch_group: "elasticsearch"
+elasticsearch_data_dir: "/var/lib/elasticsearch"
+
+kibana_user: "kibana"
+kibana_group: "kibana"

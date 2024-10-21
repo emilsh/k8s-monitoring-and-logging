@@ -2,12 +2,9 @@
 - name: "Installing monitoring and logging system"
   hosts: "servers"
   become: true
-  # vars_files:
-  #   - secrets.yml
-  #   - main.yml
 
   roles:
-  # - prometheus
-  # - node_exporter
-  # - elasticsearch_kibana
+  - prometheus
+  - node_exporter
+  - elasticsearch_kibana
   - fluentbit

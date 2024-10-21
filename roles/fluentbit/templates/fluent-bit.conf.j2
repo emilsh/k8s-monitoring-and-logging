@@ -2,17 +2,19 @@
     Flush        1
     Log_Level    info
     Parsers_File parsers.conf
-    Parsers_File output-elasticsearch.conf
 
 [INPUT]
     Name         systemd
     Tag          host.*
+    DB           /var/log/flb_systemd.db
 
 [OUTPUT]
     Name  es
     Match host.*
     Host  {{ elasticsearch_host }}
     Port  {{ elasticsearch_port }}
-    Index logs
+    Index systemd-logs
     Type  _doc
     Logstash_Format On
+    Replace_Dots On
+    Retry_Limit Off

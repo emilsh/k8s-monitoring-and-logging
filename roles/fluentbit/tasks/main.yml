@@ -15,67 +15,13 @@
     state: "present"
     update_cache: "yes"
 
-- name: "Create FluentBit group"
-  ansible.builtin.group:
-    name: "{{ fluentbit_group }}"
-    state: "present"
-
-- name: "Create FluentBit user"
-  ansible.builtin.user:
-    name: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_group }}"
-    shell: "/usr/sbin/nologin"
-    state: "present"
-
-- name: "Create directories for FluentBit"
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: "directory"
-    owner: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_group }}"
-    mode: "0755"
-  loop:
-    - "{{ fluentbit_conf_dir }}"
-    - "{{ fluentbit_log_dir }}"
-
 - name: "Copy FluentBit configuration"
   ansible.builtin.template:
     src: "fluent-bit.conf.j2"
-    dest: "{{ fluentbit_conf_dir }}/fluent-bit.conf"
-    owner: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_group }}"
-    mode: "0644"
-
-- name: "Copy FluentBit parsers configuration"
-  ansible.builtin.template:
-    src: "parsers.conf.j2"
-    dest: "{{ fluentbit_conf_dir }}/parsers.conf"
-    owner: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_group }}"
-    mode: "0644"
-
-- name: "Copy ElasticSearch output configuration"
-  ansible.builtin.template:
-    src: "output-elasticsearch.conf.j2"
-    dest: "{{ fluentbit_conf_dir }}/output-elasticsearch.conf"
-    owner: "{{ fluentbit_user }}"
-    group: "{{ fluentbit_group }}"
-    mode: "0644"
-
-- name: "Deploy FluentBit systemd service file"
-  ansible.builtin.template:
-    src: "fluentbit.service.j2"
-    dest: "/etc/systemd/system/fluentbit.service"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-
-- name: "Reload systemd daemon"
-  ansible.builtin.systemd:
-    daemon_reload: "yes"
+    dest: "{{ fluentbit_conf_dir }}/td-agent-bit.conf"
 
 - name: "Enable and start FluentBit service"
   ansible.builtin.systemd:
-    name: "{{ fluentbit_service_name }}"
+    name: "td-agent-bit"
     enabled: "yes"
     state: "started"

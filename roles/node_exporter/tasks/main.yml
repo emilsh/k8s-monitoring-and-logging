@@ -56,10 +56,3 @@
   delegate_to: "{{ prometheus_host }}"
   notify:
     - Restart Prometheus
-
-# - name: Restart Prometheus service on remote Prometheus server
-#   ansible.builtin.systemd:
-#     name: prometheus
-#     state: restarted
-#   delegate_to: "{{ prometheus_host }}"
-#   when: prometheus_reload_on_update

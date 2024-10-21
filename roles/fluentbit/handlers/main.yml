@@ -1,6 +1,0 @@
----
-- name: restart fluentbit
-  ansible.builtin.systemd:
-    name: "{{ fluentbit_service_name }}"
-    state: restarted
-  become: yes

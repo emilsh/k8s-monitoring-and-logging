@@ -1,11 +1,5 @@
-fluentbit_version: "2.1.0"
-fluentbit_user: "fluentbit"
-fluentbit_group: "fluentbit"
-fluentbit_install_dir: "/opt/fluentbit"
-fluentbit_log_dir: "/var/log/fluentbit"
-fluentbit_conf_dir: "/etc/fluentbit"
-fluentbit_service_name: "fluentbit"
-elasticsearch_host: "localhost"
+fluentbit_conf_dir: "/etc/td-agent-bit"
+elasticsearch_host: "127.0.0.1"
 elasticsearch_port: 9200
 
 fluentbit_apt_repo: "deb https://packages.fluentbit.io/ubuntu/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"
